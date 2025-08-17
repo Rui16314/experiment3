@@ -1,11 +1,11 @@
-// server.js
-const express = require('express');
+const express = require("express");
 const app = express();
-const roundRoutes = require('./routes/roundRoutes');
+const gameController = require("./controllers/gameController");
 
 app.use(express.json());
-app.use('/api/round', roundRoutes);
+
+app.post("/create-game", gameController.createGame);
 
 app.listen(3000, () => {
-  console.log('Server running on port 3000');
+  console.log("Server running on port 3000");
 });
