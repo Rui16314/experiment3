@@ -1,12 +1,25 @@
 const express = require('express');
-const app = express();
-const gameRoutes = require('./routes/gameRoutes');
-
-app.use(express.json());
-app.use('/api/game', gameRoutes);
-
-app.listen(3000, () => {
-  console.log('Server running on port 3000');
-});
 const path = require('path');
+const adminRouter = require('./routes/adminRouter');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(express.json());
+
+// Serve static files from frontend folder
 app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Routes
+app.use('/api/game', adminRouter);
+
+// Default route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
+});
