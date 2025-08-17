@@ -1,56 +1,117 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Game Experiment</title>
+  <meta charset="UTF-8">
+  <title>ECON 3310 Experiment Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-  <h1>Join the Game</h1>
-  <form id="joinForm">
-    <input type="text" id="playerId" placeholder="Your ID" required />
-    <select id="experimentType">
-      <option value="3-A">3-A (Prisoner's Dilemma)</option>
-      <option value="3-B">3-B (Effort Game)</option>
-    </select>
-    <button type="submit">Join</button>
-  </form>
+  <div class="container mt-4">
+    <h1 class="text-center mb-4">Welcome to the ECON 3310 Experiment Platform</h1>
 
-  <h2>Submit Action</h2>
-  <form id="actionForm">
-    <input type="text" id="actionPlayerId" placeholder="Your ID" required />
-    <input type="text" id="actionValue" placeholder="Action (C/D or effort)" required />
-    <button type="submit">Submit</button>
-  </form>
+    <!-- General Instructions -->
+    <div class="mb-5 p-4 border rounded bg-light">
+      <h2>General Instructions</h2>
+      <p>You will participate in two experiments:</p>
+      <ul>
+        <li><strong>Experiment 3-A:</strong> 10 rounds of strategic decision-making</li>
+        <li><strong>Experiment 3-B:</strong> 15 rounds of effort-based collaboration</li>
+      </ul>
+      <p>Each round lasts about 1 minute. The entire session should take no more than 35 minutes.</p>
+      <p>You will earn <strong>100 points</strong> for participating, plus extra points based on your decisions and outcomes.</p>
+    </div>
 
-  <pre id="output"></pre>
+    <!-- Experiment 3-A Instructions -->
+    <div class="mb-5 p-4 border rounded">
+      <h2>Instructions for Experiment 3-A</h2>
+      <p>You will play 10 rounds. Each round, you'll be randomly paired with a different participant.</p>
+      <p>You’ll be assigned a role:</p>
+      <ul>
+        <li><strong>Player 1:</strong> Choose <code>U</code>, <code>C</code>, or <code>D</code></li>
+        <li><strong>Player 2:</strong> Choose <code>L</code>, <code>M</code>, or <code>R</code></li>
+      </ul>
+      <p>Submit your choice within 1 minute or receive zero payoff. You’ll see your opponent’s choice and your points after each round.</p>
+
+      <h4>Payoff Table</h4>
+      <table class="table table-bordered text-center">
+        <thead>
+          <tr><th></th><th>L</th><th>M</th><th>R</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>U</strong></td><td>80, 20</td><td>50, 0</td><td>50, 10</td></tr>
+          <tr><td><strong>C</strong></td><td>60, 40</td><td>80, 30</td><td>30, 90</td></tr>
+          <tr><td><strong>D</strong></td><td>70, 90</td><td>90, 70</td><td>40, 120</td></tr>
+        </tbody>
+      </table>
+      <p><em>First number = Player 1’s payoff, second = Player 2’s payoff.</em></p>
+    </div>
+
+    <!-- Experiment 3-B Instructions -->
+    <div class="mb-5 p-4 border rounded">
+      <h2>Instructions for Experiment 3-B</h2>
+      <p>You will play 15 rounds. Each round, you'll be randomly paired with a different participant.</p>
+      <p>Choose an effort level (any non-negative real number) to generate profit for both players.</p>
+      <p>You have 1 minute to submit your choice. If you don’t, you earn zero payoff.</p>
+
+      <h4>Payoff Formula</h4>
+      <ul>
+        <li><strong>Your profit:</strong> \( 100(x + y) + \frac{2}{3}xy \)</li>
+        <li><strong>Your cost:</strong> \( x^2 \)</li>
+        <li><strong>Your points:</strong> \( 100(x + y) + \frac{2}{3}xy - x^2 \)</li>
+        <li><strong>Your opponent’s points:</strong> \( 100(x + y) + \frac{2}{3}xy - y^2 \)</li>
+      </ul>
+      <p>After each round, you’ll see your opponent’s effort and your points. You’ll also see the top scorer’s effort for comparison.</p>
+    </div>
+
+    <!-- Game Interaction -->
+    <div class="mb-5 p-4 border rounded">
+      <h2>Join the Game</h2>
+      <form id="joinForm">
+        <div class="mb-3">
+          <label for="playerName" class="form-label">Your Name</label>
+          <input type="text" class="form-control" id="playerName" required>
+        </div>
+        <div class="mb-3">
+          <label for="gameType" class="form-label">Select Game</label>
+          <select class="form-select" id="gameType">
+            <option value="3-A">3-A (Prisoner's Dilemma)</option>
+            <option value="3-B">3-B (Effort Game)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Join</button>
+      </form>
+    </div>
+
+    <div class="mb-5 p-4 border rounded">
+      <h2>Submit Action</h2>
+      <form id="actionForm">
+        <div class="mb-3">
+          <label for="playerAction" class="form-label">Your Action</label>
+          <input type="text" class="form-control" id="playerAction" required>
+        </div>
+        <button type="submit" class="btn btn-success">Submit</button>
+      </form>
+      <div id="responseMessage" class="mt-3 text-info"></div>
+    </div>
+  </div>
 
   <script>
-    document.getElementById('joinForm').onsubmit = async (e) => {
+    document.getElementById('joinForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const id = document.getElementById('playerId').value;
-      const experimentType = document.getElementById('experimentType').value;
+      const name = document.getElementById('playerName').value;
+      const game = document.getElementById('gameType').value;
+      // TODO: Send join request to backend
+      alert(`Joined as ${name} for game ${game}`);
+    });
 
-      const res = await fetch('/api/game/join', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, experimentType })
-      });
-      const data = await res.json();
-      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
-    };
-
-    document.getElementById('actionForm').onsubmit = async (e) => {
+    document.getElementById('actionForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const id = document.getElementById('actionPlayerId').value;
-      const action = document.getElementById('actionValue').value;
-
-      const res = await fetch('/api/game/action', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, action })
-      });
-      const data = await res.json();
-      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
-    };
+      const action = document.getElementById('playerAction').value;
+      // TODO: Send action to backend
+      document.getElementById('responseMessage').textContent = 'Action received, waiting for pair';
+    });
   </script>
 </body>
 </html>
+
