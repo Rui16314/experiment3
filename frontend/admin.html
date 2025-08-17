@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard – ECON 3310</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-4">
+    <h1 class="text-center mb-4">Coordinator Control Panel</h1>
+
+    <!-- Player List -->
+    <div class="mb-4 p-3 border rounded bg-light">
+      <h3>Active Players</h3>
+      <ul id="playerList" class="list-group">
+        <!-- Filled dynamically -->
+      </ul>
+    </div>
+
+    <!-- Round Control -->
+    <div class="mb-4 p-3 border rounded">
+      <h3>Round Management</h3>
+      <button id="startRoundBtn" class="btn btn-primary">Start Next Round</button>
+      <button id="endExperimentBtn" class="btn btn-danger ms-2">End Experiment</button>
+    </div>
+
+    <!-- Log Output -->
+    <div class="mb-4 p-3 border rounded bg-light">
+      <h3>Activity Log</h3>
+      <pre id="logOutput" style="height: 200px; overflow-y: scroll; background-color: #f0f0f0;"></pre>
+    </div>
+  </div>
+
+  <script>
+    // Example: Fetch players from backend
+    async function fetchPlayers() {
+      const res = await fetch('/api/game/players');
+      const data = await res.json();
+      const list = document.getElementById('playerList');
+      list.innerHTML = '';
+      data.forEach(player => {
+        const item = document.createElement('li');
+        item.className = 'list-group-item';
+        item.textContent = `${player.id} (${player.experimentType})`;
+        list.appendChild(item);
+      });
+    }
+
+    document.getElementById('startRoundBtn').onclick = async () => {
+      const res = await fetch('/api/game/start-round', { method: 'POST' });
+      const result = await res.json();
+      document.getElementById('logOutput').textContent += `\nRound started: ${JSON.stringify(result)}`;
+    };
+
+    document.getElementById('endExperimentBtn').onclick = async () => {
+      const res = await fetch('/api/game/end', { method: 'POST' });
+      const result = await res.json();
+      document.getElementById('logOutput').textContent += `\nExperiment ended: ${JSON.stringify(result)}`;
+    };
+
+    fetchPlayers();
+  </script>
+</body>
+</html>
