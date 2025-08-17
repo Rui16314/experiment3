@@ -1,4 +1,13 @@
 // db.js
+const admin = require("firebase-admin");
+
+admin.initializeApp({
+  credential: admin.credential.applicationDefault(), // or use a service account
+});
+
+const db = admin.firestore();
+module.exports = db;
+
 const { Pool } = require('pg');
 require('dotenv').config();
 
