@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Game Experiment</title>
+</head>
+<body>
+  <h1>Join the Game</h1>
+  <form id="joinForm">
+    <input type="text" id="playerId" placeholder="Your ID" required />
+    <select id="experimentType">
+      <option value="3-A">3-A (Prisoner's Dilemma)</option>
+      <option value="3-B">3-B (Effort Game)</option>
+    </select>
+    <button type="submit">Join</button>
+  </form>
+
+  <h2>Submit Action</h2>
+  <form id="actionForm">
+    <input type="text" id="actionPlayerId" placeholder="Your ID" required />
+    <input type="text" id="actionValue" placeholder="Action (C/D or effort)" required />
+    <button type="submit">Submit</button>
+  </form>
+
+  <pre id="output"></pre>
+
+  <script>
+    document.getElementById('joinForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('playerId').value;
+      const experimentType = document.getElementById('experimentType').value;
+
+      const res = await fetch('/api/game/join', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, experimentType })
+      });
+      const data = await res.json();
+      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+    };
+
+    document.getElementById('actionForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('actionPlayerId').value;
+      const action = document.getElementById('actionValue').value;
+
+      const res = await fetch('/api/game/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, action })
+      });
+      const data = await res.json();
+      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+    };
+  </script>
+</body>
+</html>
